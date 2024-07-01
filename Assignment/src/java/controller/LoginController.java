@@ -49,10 +49,10 @@ public class LoginController extends HttpServlet {
                         request.getRequestDispatcher("").forward(request, response);
                         break;
                     case 2:
-                        request.getRequestDispatcher("list_course.jsp").forward(request, response);
+                        request.getRequestDispatcher("home.jsp").forward(request, response);
                         break;
                     default:
-                        request.getRequestDispatcher("list_course.jsp").forward(request, response);
+                        request.getRequestDispatcher("home.jsp").forward(request, response);
                         break;
                 }
 
