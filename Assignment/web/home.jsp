@@ -19,39 +19,26 @@
         <input type="text" id="search" placeholder="Tìm kiếm khóa học..." onkeyup="searchCourses()" style="margin-top: 10px; padding: 8px; width: 80%; max-width: 400px; border: none; border-radius: 4px;">
     </header>
     <div class="table-container">
+        <p>Total: 0</p>
         <table id="courseTable">
             <thead>
                 <tr>
-                    <th>Mã khóa học</th>
-                    <th>Tên khóa học</th>
-                    <th>Mô tả</th>
-                    <th>Thời lượng</th>
+                    <th>Id</th>
+                    <th>Code</th>
+                    <th>Name</th>
                 </tr>
             </thead>
             <tbody>
+                
                 <tr>
                     <td>CSE101</td>
                     <td>Giới thiệu về Khoa học máy tính</td>
                     <td>Môn học giới thiệu về các khái niệm và lập trình máy tính.</td>
-                    <td>10 tuần</td>
                 </tr>
-                <tr>
-                    <td>MAT201</td>
-                    <td>Tích phân I</td>
-                    <td>Các nguyên lý cơ bản về tích phân, bao gồm đạo hàm và tích phân.</td>
-                    <td>12 tuần</td>
-                </tr>
-                <tr>
-                    <td>PHY301</td>
-                    <td>Vật lý tổng quát</td>
-                    <td>Các nguyên lý vật lý bao gồm cơ học, sóng và nhiệt động học.</td>
-                    <td>14 tuần</td>
-                </tr>
-                <!-- Thêm các khóa học khác nếu cần -->
+                
             </tbody>
         </table>
     </div>
-    <script src="scripts.js"></script>
 </body>
 </html>
 <style>
@@ -63,6 +50,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            font-size: 18px;
         }
 
         header {
