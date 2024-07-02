@@ -9,36 +9,27 @@ public class Assessment {
     private int courseId;
     private String category;
     private String type;
-    private String part;
-    private double weight;
     private String completionCriteria;
     private String duration;
     private String questionType;
     private String noQuestion;
-    private String knowledgeAndSkill;
-    private String gradingGuide;
-    private String note;
+
 
     public Assessment() {
     }
 
-    public Assessment(int assessmentId, int courseId, String category, String type, String part, double weight,
-            String completionCriteria, String duration, String questionType, String noQuestion, String knowledgeAndSkill, String gradingGuide, String note) {
+    public Assessment(int assessmentId, int courseId, String category, String type, String completionCriteria, String duration, String questionType, String noQuestion) {
         this.assessmentId = assessmentId;
         this.courseId = courseId;
         this.category = category;
         this.type = type;
-        this.part = part;
-        this.weight = weight;
         this.completionCriteria = completionCriteria;
         this.duration = duration;
         this.questionType = questionType;
         this.noQuestion = noQuestion;
-        this.knowledgeAndSkill = knowledgeAndSkill;
-        this.gradingGuide = gradingGuide;
-        this.note = note;
     }
 
+    
     public int getAssessmentId() {
         return assessmentId;
     }
@@ -55,8 +46,6 @@ public class Assessment {
         this.courseId = courseId;
     }
 
-   
-
     public String getCategory() {
         return category;
     }
@@ -72,23 +61,6 @@ public class Assessment {
     public void setType(String type) {
         this.type = type;
     }
-
-    public String getPart() {
-        return part;
-    }
-
-    public void setPart(String part) {
-        this.part = part;
-    }
-
-    public double getWeight() {
-        return weight;
-    }
-
-    public void setWeight(double weight) {
-        this.weight = weight;
-    }
-
     public String getCompletionCriteria() {
         return completionCriteria;
     }
@@ -105,7 +77,14 @@ public class Assessment {
         this.duration = duration;
     }
 
- 
+    public String getNoQuestion() {
+        return noQuestion;
+    }
+
+    public void setNoQuestion(String noQuestion) {
+        this.noQuestion = noQuestion;
+    }
+
 
     public String getQuestionType() {
         return questionType;
@@ -115,36 +94,9 @@ public class Assessment {
         this.questionType = questionType;
     }
 
-    public String getNoQuestion() {
-        return noQuestion;
-    }
-
-    public void setNoQuestion(String noQuestion) {
-        this.noQuestion = noQuestion;
-    }
-
-    public String getKnowledgeAndSkill() {
-        return knowledgeAndSkill;
-    }
-
-    public void setKnowledgeAndSkill(String knowledgeAndSkill) {
-        this.knowledgeAndSkill = knowledgeAndSkill;
-    }
-
-    public String getGradingGuide() {
-        return gradingGuide;
-    }
-
-    public void setGradingGuide(String gradingGuide) {
-        this.gradingGuide = gradingGuide;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
+    @Override
+    public String toString() {
+        return "Assessment{" + "assessmentId=" + assessmentId + ", courseId=" + courseId + ", category=" + category + ", type=" + type + ", completionCriteria=" + completionCriteria + ", duration=" + duration + ", questionType=" + questionType + ", noQuestion=" + noQuestion + '}';
     }
     
     

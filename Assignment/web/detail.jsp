@@ -28,34 +28,50 @@
             </nav>
         </header>
         <div class="table-container">
-            <form action="courses">
-                <div class="search-container">
-                    <input type="text" id="search" name="code" placeholder="Tìm kiếm môn học...">
-                    <button type="submit">Search</button>
-                </div>
-            </form>
-
-            <p>Total: ${total}</p>
-            <table id="courseTable">
-                <thead>
+            <table class="table table-bordered mt-3">
+                <tbody>
                     <tr>
                         <th>Id</th>
+                        <td>${course.courseId}</td>
+                    </tr>
+                    <tr>
                         <th>Code</th>
+                        <td>${course.courseCode}</td>
+                    </tr>
+                    <tr>
                         <th>Name</th>
+                        <td>${course.courseName}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Category</th>
+                        <th>Type</th>
+                        <th>Completion Criteria</th>
+                        <th>Duration</th>
+                        <th>Question Type</th>
+                        <th>No Question</th>
                     </tr>
                 </thead>
                 <tbody>
-
-                    <c:forEach var="o" items="${courses}">
+                    <c:forEach var="o" items="${assessments}">
                         <tr>
-                            <td>${o.courseId}</td>
-                            <td>${o.courseCode}</td>
-                            <td><a href="detail?id=${o.courseId}">${o.courseName}</a></td>
+                            <td>${o.category}</td>
+                            <td>${o.type}</td>
+                            <td>${o.completionCriteria}</td>
+                            <td>${o.duration}</td>
+                            <td>${o.questionType}</td>
+                            <td>${o.noQuestion}</td>
                         </tr>
                     </c:forEach>
 
+
                 </tbody>
             </table>
+
         </div>
     </body>
 </html>

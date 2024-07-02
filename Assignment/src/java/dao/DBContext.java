@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class DBContext {
 
-    private static final String DB = "GradeManagementSystem";
+    private static final String DB = "GradeAssignment";
     private static final String USER_NAME = "admin";
     private static final String PASSWORD = "admin";
 
