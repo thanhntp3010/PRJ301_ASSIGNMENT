@@ -17,7 +17,7 @@
                 <a href="#">Courses</a>
                 <c:if test="${sessionScope['account']!=null}">
                     <c:if test="${sessionScope['account'].roleId == 3}">
-                        <a href="#">Grade</a>
+                        <a href="studentgrade">Grade</a>
                     </c:if>
                     <a href="#">Welcome, ${sessionScope['account'].fullName}</a>
                     <a href="logout">Logout</a>

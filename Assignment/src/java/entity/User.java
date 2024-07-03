@@ -7,6 +7,7 @@ package entity;
 public class User {
     private int userId;
     private String username;
+    private String rollNumber;
     private String password;
     private String fullName;
     private String email;
@@ -15,24 +16,34 @@ public class User {
     public User() {
     }
 
-    public User(int userId, String username, String fullName, String email, int roleId) {
+    public User(int userId, String username,String rollNumber, String fullName, String email, int roleId) {
         this.userId = userId;
         this.username = username;
         this.fullName = fullName;
         this.email = email;
+        this.rollNumber = rollNumber;
         this.roleId = roleId;
     }
-    
-    
 
-    public User(int userId, String username, String password, String fullName, String email, int roleId) {
+    public User(int userId, String username, String rollNumber, String password, String fullName, String email, int roleId) {
         this.userId = userId;
         this.username = username;
+        this.rollNumber = rollNumber;
         this.password = password;
         this.fullName = fullName;
         this.email = email;
         this.roleId = roleId;
     }
+
+    public String getRollNumber() {
+        return rollNumber;
+    }
+
+    public void setRollNumber(String rollNumber) {
+        this.rollNumber = rollNumber;
+    }
+    
+    
 
     public int getUserId() {
         return userId;

@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 public class UserDAO {
     public User checkLogin(String username, String password) throws SQLException, ClassNotFoundException {
         User user = null;
-        String sql = "SELECT UserId, Username, FullName, Email, RoleId FROM Users WHERE Username = ? AND Password = ?";
+        String sql = "SELECT UserId, Username,RollNumber, FullName, Email, RoleId FROM Users WHERE Username = ? AND Password = ?";
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -33,8 +33,9 @@ public class UserDAO {
                     String fullName = rs.getString("FullName");
                     String email = rs.getString("Email");
                     int roleId = rs.getInt("RoleId");
+                    String rollNumber = rs.getString("RollNumber");
 
-                    user = new User(userId, username, fullName, email, roleId);
+                    user = new User(userId, username, rollNumber, fullName, email, roleId);
                 }
             }
         } catch (SQLException e) {

@@ -28,38 +28,98 @@
             </nav>
         </header>
         <div class="table-container">
-            <form action="courses">
-                <div class="search-container">
-                    <input type="text" id="search" name="code" placeholder="Tìm kiếm môn học...">
-                    <button type="submit">Search</button>
-                </div>
-            </form>
-
-            <p>Total: ${total}</p>
-            <table id="courseTable">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Code</th>
-                        <th>Name</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                    <c:forEach var="o" items="${courses}">
+            <form action="submit_grades.php" method="post">
+            <div class="scrollable-table">
+                <table>
+                    <thead>
                         <tr>
-                            <td>${o.courseId}</td>
-                            <td>${o.courseCode}</td>
-                            <td><a href="detail?id=${o.courseId}">${o.courseName}</a></td>
+                            <th>Roll</th>
+                            <th>Name</th>
+                            <th>Final Project Presentation Rest</th>
+                            <th>Implementation (Report 7)</th>
+                            <th>Project Introduction</th>
+                            <th>Project Management Plan</th>
+                            <th>Software Design (Report 4)</th>
+                            <th>Software Requirement</th>
                         </tr>
-                    </c:forEach>
-
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>HE161216</td>
+                            <td class="name">Trịnh Anh Đức</td>
+                            <td><input type="number" name="grades[HE161216][final_project]" required></td>
+                            <td><input type="number" name="grades[HE161216][implementation]" required></td>
+                            <td><input type="number" name="grades[HE161216][project_intro]" required></td>
+                            <td><input type="number" name="grades[HE161216][project_management]" required></td>
+                            <td><input type="number" name="grades[HE161216][software_design]" required></td>
+                            <td><input type="number" name="grades[HE161216][software_requirement]" required></td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+            <div class="form-container">
+                <input type="submit" value="Submit Grades">
+            </div>
+        </form>
         </div>
     </body>
 </html>
 <style>
+    table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #333;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .form-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+        .form-container input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .form-container input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .scrollable-table {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        th, td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        td.name {
+            max-width: 200px;
+        }
     body {
         font-family: Arial, sans-serif;
         background-color: #f9f9f9;
@@ -139,7 +199,7 @@
 
     .table-container {
         width: 90%;
-        max-width: 1200px;
+        max-width: 1600px;
         margin-top: 20px;
         overflow-x: auto;
     }

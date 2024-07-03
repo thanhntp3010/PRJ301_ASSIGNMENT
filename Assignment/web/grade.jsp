@@ -17,9 +17,9 @@
                 <a href="#">Courses</a>
                 <c:if test="${sessionScope['account']!=null}">
                     <c:if test="${sessionScope['account'].roleId == 3}">
-                        <a href="studentgrade">Grade</a>
+                        <a href="#">Grade</a>
                     </c:if>
-                    <a href="#">Welcome, ${sessionScope['account'].fullName}</a>
+                    <a href="studentgrade">Welcome, ${sessionScope['account'].fullName}</a>
                     <a href="logout">Logout</a>
                 </c:if>
                 <c:if test="${sessionScope['account']==null}">
@@ -28,32 +28,31 @@
             </nav>
         </header>
         <div class="table-container">
-            <form action="courses">
-                <div class="search-container">
-                    <input type="text" id="search" name="code" placeholder="Tìm kiếm môn học...">
-                    <button type="submit">Search</button>
-                </div>
-            </form>
-
-            <p>Total: ${total}</p>
-            <table id="courseTable">
-                <thead>
+            <h2> Grade report for transcipt ${sessionScope['account'].rollNumber}</h2>
+            <table class="table table-bordered">
+                <thead class="thead-light">
                     <tr>
-                        <th>Id</th>
+                        <th>No</th>
+                        <th>Semester</th>
                         <th>Code</th>
                         <th>Name</th>
+                        <th>Grade</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
-
-                    <c:forEach var="o" items="${courses}">
+                    <c:forEach var="o" items="${grades}">
                         <tr>
-                            <td>${o.courseId}</td>
-                            <td>${o.courseCode}</td>
-                            <td><a href="detail?id=${o.courseId}">${o.courseName}</a></td>
+                            <td>${o.no}</td>
+                            <td>${o.semester}</td>
+                            <td>${o.subjectCode}</td>
+                            <td>${o.subjectName}</td>
+                            <td>${o.grade}</td>
+                            <td>
+                                <span class="badge ${o.status == 'Passed' ? 'badge-success' : 'badge-danger'}">${o.status}</span>
+                            </td>
                         </tr>
                     </c:forEach>
-
                 </tbody>
             </table>
         </div>
@@ -97,8 +96,33 @@
     .search-container button:hover {
         background-color: #45a049;
     }
+    body {
+        background-color: #f8f9fa;
+    }
+    .table tbody tr:nth-child(odd) {
+        background-color: #f2f2f2;
+    }
+    h2 {
+        color: #343a40;
+        margin-bottom: 20px;
+    }
 
+    .table th, .table td {
+        vertical-align: middle !important;
+    }
 
+    .badge-success {
+        background-color: #28a745;
+        color: white;
+        padding: 5px 10px; 
+        border-radius: 5px; 
+    }
+    .badge-danger {
+        background-color: #dc3545;
+        color: white;
+        padding: 5px 10px; 
+        border-radius: 5px; 
+    }
     header {
         width: 100%;
         background-color: #4CAF50;
