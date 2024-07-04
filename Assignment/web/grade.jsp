@@ -14,10 +14,13 @@
             <h1>Assignment</h1>
             <nav>
                 <a href="#">Home</a>
-                <a href="#">Courses</a>
+                <a href="courses">Courses</a>
                 <c:if test="${sessionScope['account']!=null}">
                     <c:if test="${sessionScope['account'].roleId == 3}">
                         <a href="#">Grade</a>
+                    </c:if>
+                        <c:if test="${sessionScope['account'].roleId == 2}">
+                        <a href="addgrade">Add Grade</a>
                     </c:if>
                     <a href="studentgrade">Welcome, ${sessionScope['account'].fullName}</a>
                     <a href="logout">Logout</a>
