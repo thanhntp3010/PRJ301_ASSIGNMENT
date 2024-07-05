@@ -31,47 +31,54 @@
             </nav>
         </header>
         <div class="table-container">
-            <form action="" method="post">
-                <select id="classSelect" name="class">
+            <form action="listGrade" method="get">
+                <select id="classSelect" name="class" onchange="this.form.submit()">
                     <option selected disabled>Select Class</option>
                     <c:forEach var="o" items="${classes}">
                         <option value="${o.classId}-${o.courseId}">${o.name} - ${o.courseCode}</option>
                     </c:forEach>
                 </select>
-                <div class="scrollable-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Roll</th>
-                                <th>Name</th>
-                                <th>Final Project Presentation Rest</th>
-                                <th>Implementation (Report 7)</th>
-                                <th>Project Introduction</th>
-                                <th>Project Management Plan</th>
-                                <th>Software Design (Report 4)</th>
-                                <th>Software Requirement</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>HE161216</td>
-                                <td class="name">Trịnh Anh Đức</td>
-                                <td><input style="width: 8.5rem" min="0" max="10" type="number" name="grades[HE161216][final_project]" required></td>
-                                <td><input style="width: 8.5rem" min="0" max="10" type="number" name="grades[HE161216][implementation]" required></td>
-                                <td><input style="width: 8.5rem" min="0" max="10" type="number" name="grades[HE161216][project_intro]" required></td>
-                                <td><input style="width: 8.5rem" min="0" max="10" type="number" name="grades[HE161216][project_management]" required></td>
-                                <td><input style="width: 8.5rem" min="0" max="10" type="number" name="grades[HE161216][software_design]" required></td>
-                                <td><input style="width: 8.5rem" min="0" max="10" type="number" name="grades[HE161216][software_requirement]" required></td>
-                            </tr>
-
-                        </tbody>
-                    </table>
-                </div>
-                <div class="form-container">
-                    <input type="submit" value="Submit">
-                </div>
             </form>
+
+            <c:if test="${not empty students and not empty assessments}">
+                <form action="submitGrades" method="post">
+                    <div class="scrollable-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Roll</th>
+                                    <th>Name</th>
+                                        <c:forEach var="assessment" items="${assessments}">
+                                        <th>${assessment.category}</th>
+                                        </c:forEach>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="student" items="${students}">
+                                    <tr>
+                                        <td>${student.rollNumber}</td>
+                                        <td class="name">${student.fullName}</td>
+                                        <c:forEach var="assessment" items="${assessments}">
+                                            <td>
+                                                <input style="width: 8.5rem" min="0" max="10" type="number" name="grades[${student.rollNumber}][${assessment.category}]" required>
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-container">
+                        <input type="submit" value="Submit">
+                    </div>
+                </form>
+            </c:if>
+
+            <c:if test="${empty students or empty assessments}">
+                <p>Không tìm thấy kết quả nào</p>
+            </c:if>
         </div>
+
     </body>
 </html>
 <style>
