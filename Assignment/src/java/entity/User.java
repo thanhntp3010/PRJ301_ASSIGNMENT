@@ -6,6 +6,7 @@ package entity;
 
 public class User {
     private int userId;
+    private int studentClassId;
     private String username;
     private String rollNumber;
     private String password;
@@ -16,6 +17,16 @@ public class User {
     public User() {
     }
 
+    public User(int userId,int studentClassId, String username,String rollNumber, String fullName, String email, int roleId) {
+        this.userId = userId;
+        this.studentClassId = studentClassId;
+        this.username = username;
+        this.fullName = fullName;
+        this.email = email;
+        this.rollNumber = rollNumber;
+        this.roleId = roleId;
+    }
+    
     public User(int userId, String username,String rollNumber, String fullName, String email, int roleId) {
         this.userId = userId;
         this.username = username;
@@ -35,6 +46,16 @@ public class User {
         this.roleId = roleId;
     }
 
+    public int getStudentClassId() {
+        return studentClassId;
+    }
+
+    public void setStudentClassId(int studentClassId) {
+        this.studentClassId = studentClassId;
+    }
+
+    
+    
     public String getRollNumber() {
         return rollNumber;
     }

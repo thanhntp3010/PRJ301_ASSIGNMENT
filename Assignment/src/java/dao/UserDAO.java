@@ -72,7 +72,7 @@ public class UserDAO {
     
     public List<User> getStudentsByClassId(int classId) throws SQLException, ClassNotFoundException {
         List<User> students = new ArrayList<>();
-        String sql = "SELECT u.UserId, u.Username, u.RollNumber, u.FullName, u.Email, u.RoleId "
+        String sql = "SELECT sc.StudentClassId, u.UserId, u.Username, u.RollNumber, u.FullName, u.Email, u.RoleId "
                    + "FROM StudentClasses sc "
                    + "JOIN Users u ON sc.StudentId = u.UserId "
                    + "WHERE sc.ClassId = ?";
@@ -89,13 +89,14 @@ public class UserDAO {
 
                 while (rs.next()) {
                     int userId = rs.getInt("UserId");
+                    int studentClassId = rs.getInt("StudentClassId");
                     String username = rs.getString("Username");
                     String rollNumber = rs.getString("RollNumber");
                     String fullName = rs.getString("FullName");
                     String email = rs.getString("Email");
                     int roleId = rs.getInt("RoleId");
 
-                    User user = new User(userId, username, rollNumber, fullName, email, roleId);
+                    User user = new User(userId, studentClassId, username, rollNumber, fullName, email, roleId);
                     students.add(user);
                 }
             }

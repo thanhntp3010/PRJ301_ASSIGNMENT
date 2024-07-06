@@ -1,5 +1,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Map" %>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -41,7 +43,7 @@
             </form>
 
             <c:if test="${not empty students and not empty assessments}">
-                <form action="submitGrades" method="post">
+                <form action="addgrade" method="post">
                     <div class="scrollable-table">
                         <table>
                             <thead>
@@ -60,7 +62,24 @@
                                         <td class="name">${student.fullName}</td>
                                         <c:forEach var="assessment" items="${assessments}">
                                             <td>
-                                                <input style="width: 8.5rem" min="0" max="10" type="number" name="grades[${student.rollNumber}][${assessment.category}]" required>
+                                                <c:set var="studentClassId" value="${student.studentClassId}" />
+                                                <c:set var="assessmentId" value="${assessment.assessmentId}" />
+
+                                                <c:set var="score" value="" />
+                                                <c:forEach var="entry" items="${studentGrades}">
+                                                    <c:if test="${entry.key == studentClassId}">
+                                                        <c:set var="studentGradesMap" value="${entry.value}" />
+                                                    </c:if>
+                                                </c:forEach>
+
+                                                <c:forEach var="entry" items="${studentGradesMap}">
+                                                    <c:if test="${entry.key == assessmentId}">
+                                                        <c:set var="score" value="${entry.value}" />
+                                                    </c:if>
+                                                </c:forEach>
+
+                                                <input style="width: 8.5rem" min="0" max="10" type="number" name="grades[${studentClassId}][${assessmentId}]" value="${score}" required>
+
                                             </td>
                                         </c:forEach>
                                     </tr>
@@ -72,12 +91,15 @@
                         <input type="submit" value="Submit">
                     </div>
                 </form>
-            </c:if>
 
+            </c:if>
             <c:if test="${empty students or empty assessments}">
                 <p>Không tìm thấy kết quả nào</p>
             </c:if>
         </div>
+
+
+
 
     </body>
 </html>

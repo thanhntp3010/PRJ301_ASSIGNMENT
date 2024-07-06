@@ -4,15 +4,92 @@
  */
 package dao;
 
+import entity.Grade;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class GradeDAO {
+    public void insertGrade(int studentClassId, int assessmentId, double score) throws SQLException, ClassNotFoundException {
+        String sql = "INSERT INTO Grades (StudentClassId, AssessmentId, Score) VALUES (?, ?, ?)";
+        
+        try (Connection conn = DBContext.getConnection1();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, studentClassId);
+            pstmt.setInt(2, assessmentId);
+            pstmt.setDouble(3, score);
+            pstmt.executeUpdate();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    
+    public boolean updateGrade(int studentClassId, int assessmentId, double score) throws SQLException, ClassNotFoundException {
+        String sql = "UPDATE Grades SET Score = ? WHERE StudentClassId = ? AND AssessmentId = ?";
+        
+        try (Connection conn = DBContext.getConnection1();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setDouble(1, score);
+            pstmt.setInt(2, studentClassId);
+            pstmt.setInt(3, assessmentId);
+            
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    
+    public Map<String, Map<String, Double>> getGradesByClassAndCourse(int classId, int courseId) throws SQLException, ClassNotFoundException {
+        Map<String, Map<String, Double>> studentGrades = new HashMap<>();
+        String sql = "SELECT sc.StudentClassId, g.AssessmentId, g.Score " +
+                     "FROM Grades g " +
+                     "JOIN StudentClasses sc ON g.StudentClassId = sc.StudentClassId " +
+                     "JOIN Classes c ON sc.ClassId = c.ClassId " +
+                     "WHERE c.ClassId = ? AND c.CourseId = ?";
+
+        try (Connection conn = DBContext.getConnection1();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, classId);
+            pstmt.setInt(2, courseId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    String studentClassId = rs.getString("StudentClassId");
+                    String assessmentId = rs.getString("AssessmentId");
+                    double score = rs.getDouble("Score");
+
+                    studentGrades
+                        .computeIfAbsent(studentClassId, k -> new HashMap<>())
+                        .put(assessmentId, score);
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            throw e;
+        }
+
+        return studentGrades;
+    }
+    public static void main(String[] args) {
+        GradeDAO d = new GradeDAO();
+        try {
+            System.out.println(d.getGradesByClassAndCourse(1, 1));
+        } catch (SQLException ex) {
+            Logger.getLogger(GradeDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(GradeDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     public List<StudentCourseInfo> getStudentGrade(int studentId) throws SQLException, ClassNotFoundException {
         List<StudentCourseInfo> studentGrades = new ArrayList<>();
         String sql = "SELECT ROW_NUMBER() OVER (ORDER BY c.Semester, c.Year, co.CourseCode) AS NO, "

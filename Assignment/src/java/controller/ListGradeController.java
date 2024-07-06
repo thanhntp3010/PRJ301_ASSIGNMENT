@@ -6,12 +6,12 @@ package controller;
 
 import dao.AssessmentDAO;
 import dao.ClassDAO;
+import dao.GradeDAO;
 import dao.UserDAO;
 import dto.ClassDTO;
 import entity.Assessment;
 import entity.User;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +20,7 @@ import jakarta.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,35 +47,33 @@ public class ListGradeController extends HttpServlet {
                     String courseId = parts[1];
 
                     UserDAO dao = new UserDAO();
-                    List<User> students = new ArrayList<>();
-                    students = dao.getStudentsByClassId(Integer.parseInt(classId));
+                    List<User> students = dao.getStudentsByClassId(Integer.parseInt(classId));
 
                     AssessmentDAO adao = new AssessmentDAO();
-                    List<Assessment> assessments = new ArrayList<>();
-                    assessments = adao.getAssessmentsByCourseId(Integer.parseInt(courseId));
+                    List<Assessment> assessments = adao.getAssessmentsByCourseId(Integer.parseInt(courseId));
 
-                    request.setAttribute("students", students);
-                    request.setAttribute("assessments", assessments);
+                    GradeDAO gdao = new GradeDAO();
+                    Map<String, Map<String, Double>> studentGrades = gdao.getGradesByClassAndCourse(Integer.parseInt(classId), Integer.parseInt(courseId));
+                    
                     ClassDAO cdao = new ClassDAO();
                     List<ClassDTO> classeses = new ArrayList<>();
                     HttpSession session = request.getSession();
                     User user = (User) session.getAttribute("account");
                     classeses = cdao.findAllClassByInstructorId(user.getUserId());
                     request.setAttribute("classes", classeses);
+                    request.setAttribute("students", students);
+                    request.setAttribute("assessments", assessments);
+                    request.setAttribute("studentGrades", studentGrades);
                     request.getRequestDispatcher("add_grade.jsp").forward(request, response);
-                } catch (SQLException ex) {
-                    Logger.getLogger(ListGradeController.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ClassNotFoundException ex) {
+                } catch (SQLException | ClassNotFoundException ex) {
                     Logger.getLogger(ListGradeController.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
             } else {
                 System.out.println("Invalid format for classCourse parameter.");
             }
         } else {
             System.out.println("classCourse parameter is missing or empty.");
         }
-
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
