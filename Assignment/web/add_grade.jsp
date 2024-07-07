@@ -81,7 +81,7 @@
                                                     </c:if>
                                                 </c:forEach>
 
-                                                <input style="width: 8.5rem" min="0" max="10" type="number" name="grades[${studentClassId}][${assessmentId}]" value="${score}" required>
+                                                <input style="width: 8.5rem" step="0.01" min="0" max="10" type="number" name="grades[${studentClassId}][${assessmentId}]" value="${score}" required>
 
                                             </td>
                                         </c:forEach>
