@@ -4,20 +4,21 @@
  */
 package controller;
 
-import dao.UserDAO;
-import entity.User;
+import dao.GradeDAO;
+import dto.ReportDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class LoginController extends HttpServlet {
+public class ReportController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -29,37 +30,20 @@ public class LoginController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, ClassNotFoundException {
+            throws ServletException, IOException {
         try {
             response.setContentType("text/html;charset=UTF-8");
-            String username = request.getParameter("username");
-            String password = request.getParameter("password");
 
-            UserDAO dao = new UserDAO();
-            User loginUser = dao.checkLogin(username, password);
-            if (loginUser == null) {
-                request.setAttribute("ERROR", "Incorrect username or password!");
-                request.getRequestDispatcher("login.jsp").forward(request, response);
-            } else {
-                HttpSession session = request.getSession();
-                session.setAttribute("account", loginUser);
-                int roleID = loginUser.getRoleId();
-
-                switch (roleID) {
-                    case 1:
-                        request.getRequestDispatcher("home.jsp").forward(request, response);
-                        break;
-                    case 2:
-                        request.getRequestDispatcher("home.jsp").forward(request, response);
-                        break;
-                    default:
-                        request.getRequestDispatcher("home.jsp").forward(request, response);
-                        break;
-                }
-
-            }
+            GradeDAO dao = new GradeDAO();
+            List<ReportDTO> reportDTOs = new ArrayList<>();
+            reportDTOs = dao.report();
+            
+            request.setAttribute("report", reportDTOs);
+            request.getRequestDispatcher("training.jsp").forward(request, response);
         } catch (SQLException ex) {
-            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ReportController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ReportController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -75,11 +59,7 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
 
     /**
@@ -93,11 +73,7 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
 
     /**

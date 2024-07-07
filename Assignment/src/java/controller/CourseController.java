@@ -44,7 +44,7 @@ public class CourseController extends HttpServlet {
 
             List<Course> courses = new ArrayList<>();
 
-            if (user.getRoleId() == 3) {
+            if (user.getRoleId() == 3 || user.getRoleId() == 1) {
                 courses = dao.findCoursesByCodeAndInstructorId(code, 0);
             } else {
                 courses = dao.findCoursesByCodeAndInstructorId(code, user.getUserId());

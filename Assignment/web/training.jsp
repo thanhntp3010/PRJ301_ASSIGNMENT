@@ -5,7 +5,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Home - Course List</title>
+        <title>Home - Report</title>
         <link rel="stylesheet" href="styles.css">
 
     </head>
@@ -17,15 +17,15 @@
                 <a href="courses">Courses</a>
                 <c:if test="${sessionScope['account']!=null}">
                     <c:if test="${sessionScope['account'].roleId == 3}">
-                        <a href="studentgrade">Grade</a>
+                        <a href="#">Grade</a>
                     </c:if>
                     <c:if test="${sessionScope['account'].roleId == 2}">
                         <a href="addgrade">Add Grade</a>
                     </c:if>
-                        <c:if test="${sessionScope['account'].roleId == 1}">
+                    <c:if test="${sessionScope['account'].roleId == 1}">
                         <a href="Report">Report</a>
                     </c:if>
-                    <a href="#">Welcome, ${sessionScope['account'].fullName}</a>
+                    <a href="studentgrade">Welcome, ${sessionScope['account'].fullName}</a>
                     <a href="logout">Logout</a>
                 </c:if>
                 <c:if test="${sessionScope['account']==null}">
@@ -34,50 +34,38 @@
             </nav>
         </header>
         <div class="table-container">
-            <table class="table table-bordered mt-3">
-                <tbody>
-                    <tr>
-                        <th>Id</th>
-                        <td>${course.courseId}</td>
-                    </tr>
-                    <tr>
-                        <th>Code</th>
-                        <td>${course.courseCode}</td>
-                    </tr>
-                    <tr>
-                        <th>Name</th>
-                        <td>${course.courseName}</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <table class="table table-bordered">
+            <h2> Pass/Fail Rates by Course and Semester
+            </h2>
+            <table class="table table-bordered table-hover">
                 <thead class="thead-light">
                     <tr>
-                        <th>Category</th>
-                        <th>Type</th>
-                        <th>Completion Criteria</th>
-                        <th>Duration</th>
-                        <th>Question Type</th>
-                        <th>No Question</th>
+                        <th>Semester</th>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Total Students</th>
+                        <th>Passed Students</th>
+                        <th>Failed Students</th>
+                        <th>Pass Rate (%)</th>
+                        <th>Failed Rate (%)</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach var="o" items="${assessments}">
+                    <c:forEach var="report" items="${report}">
                         <tr>
-                            <td>${o.category}</td>
-                            <td>${o.type}</td>
-                            <td>${o.completionCriteria}</td>
-                            <td>${o.duration}</td>
-                            <td>${o.questionType}</td>
-                            <td>${o.noQuestion}</td>
+                            <td>${report.semester}</td>
+                            <td>${report.code}</td>
+                            <td>${report.name}</td>
+                            <td>${report.totalStudent}</td>
+                            <td>${report.passedStudent}</td>
+                            <td>${report.failedStudent}</td>
+                            <td><span class="badge badge-success">${report.passedStudent / report.totalStudent * 100}</span>
+                            </td>
+                            <td><span class="badge badge-danger">${report.failedStudent / report.totalStudent * 100}</span>
+                            </td>
                         </tr>
                     </c:forEach>
-
-
                 </tbody>
             </table>
-
         </div>
     </body>
 </html>
@@ -119,8 +107,33 @@
     .search-container button:hover {
         background-color: #45a049;
     }
+    body {
+        background-color: #f8f9fa;
+    }
+    .table tbody tr:nth-child(odd) {
+        background-color: #f2f2f2;
+    }
+    h2 {
+        color: #343a40;
+        margin-bottom: 20px;
+    }
 
+    .table th, .table td {
+        vertical-align: middle !important;
+    }
 
+    .badge-success {
+        background-color: #28a745;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+    .badge-danger {
+        background-color: #dc3545;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
     header {
         width: 100%;
         background-color: #4CAF50;

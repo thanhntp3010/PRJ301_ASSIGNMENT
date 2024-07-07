@@ -12,6 +12,7 @@
         <div class="login-container">
             <h2>Login</h2>
             <form action="login" method="POST">
+                <p style="color: red;">${ERROR}</p>
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" required>

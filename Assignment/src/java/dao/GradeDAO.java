@@ -4,6 +4,7 @@
  */
 package dao;
 
+import dto.ReportDTO;
 import entity.Grade;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,13 +17,12 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 public class GradeDAO {
+
     public void insertGrade(int studentClassId, int assessmentId, double score) throws SQLException, ClassNotFoundException {
         String sql = "INSERT INTO Grades (StudentClassId, AssessmentId, Score) VALUES (?, ?, ?)";
-        
-        try (Connection conn = DBContext.getConnection1();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+        try (Connection conn = DBContext.getConnection1(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, studentClassId);
             pstmt.setInt(2, assessmentId);
             pstmt.setDouble(3, score);
@@ -32,16 +32,15 @@ public class GradeDAO {
             throw e;
         }
     }
-    
+
     public boolean updateGrade(int studentClassId, int assessmentId, double score) throws SQLException, ClassNotFoundException {
         String sql = "UPDATE Grades SET Score = ? WHERE StudentClassId = ? AND AssessmentId = ?";
-        
-        try (Connection conn = DBContext.getConnection1();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+        try (Connection conn = DBContext.getConnection1(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setDouble(1, score);
             pstmt.setInt(2, studentClassId);
             pstmt.setInt(3, assessmentId);
-            
+
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException | ClassNotFoundException e) {
@@ -49,17 +48,16 @@ public class GradeDAO {
             throw e;
         }
     }
-    
+
     public Map<String, Map<String, Double>> getGradesByClassAndCourse(int classId, int courseId) throws SQLException, ClassNotFoundException {
         Map<String, Map<String, Double>> studentGrades = new HashMap<>();
-        String sql = "SELECT sc.StudentClassId, g.AssessmentId, g.Score " +
-                     "FROM Grades g " +
-                     "JOIN StudentClasses sc ON g.StudentClassId = sc.StudentClassId " +
-                     "JOIN Classes c ON sc.ClassId = c.ClassId " +
-                     "WHERE c.ClassId = ? AND c.CourseId = ?";
+        String sql = "SELECT sc.StudentClassId, g.AssessmentId, g.Score "
+                + "FROM Grades g "
+                + "JOIN StudentClasses sc ON g.StudentClassId = sc.StudentClassId "
+                + "JOIN Classes c ON sc.ClassId = c.ClassId "
+                + "WHERE c.ClassId = ? AND c.CourseId = ?";
 
-        try (Connection conn = DBContext.getConnection1();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DBContext.getConnection1(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, classId);
             pstmt.setInt(2, courseId);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -69,8 +67,8 @@ public class GradeDAO {
                     double score = rs.getDouble("Score");
 
                     studentGrades
-                        .computeIfAbsent(studentClassId, k -> new HashMap<>())
-                        .put(assessmentId, score);
+                            .computeIfAbsent(studentClassId, k -> new HashMap<>())
+                            .put(assessmentId, score);
                 }
             }
         } catch (SQLException | ClassNotFoundException e) {
@@ -80,6 +78,7 @@ public class GradeDAO {
 
         return studentGrades;
     }
+
     public static void main(String[] args) {
         GradeDAO d = new GradeDAO();
         try {
@@ -90,20 +89,35 @@ public class GradeDAO {
             Logger.getLogger(GradeDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     public List<StudentCourseInfo> getStudentGrade(int studentId) throws SQLException, ClassNotFoundException {
         List<StudentCourseInfo> studentGrades = new ArrayList<>();
-        String sql = "SELECT ROW_NUMBER() OVER (ORDER BY c.Semester, c.Year, co.CourseCode) AS NO, "
-                + "CONCAT_WS(' ', c.Semester, c.Year) AS SEMESTER, "
-                + "co.CourseCode AS SUBJECT_CODE, "
-                + "co.CourseName AS SUBJECT_NAME, "
-                + "g.Score AS GRADE, "
-                + "CASE WHEN g.Score >= 5.0 THEN 'Passed' ELSE 'Not Passed' END AS STATUS "
-                + "FROM Grades g "
-                + "JOIN StudentClasses sc ON g.StudentClassId = sc.StudentClassId "
-                + "JOIN Classes c ON sc.ClassId = c.ClassId "
-                + "JOIN Courses co ON c.CourseId = co.CourseId "
-                + "WHERE sc.StudentId = ? "
-                + "ORDER BY c.Year, c.Semester, co.CourseCode";
+        String sql = "SELECT \n"
+                + "    ROW_NUMBER() OVER (ORDER BY c.Semester, c.Year, co.CourseCode) AS NO,\n"
+                + "    CONCAT_WS(' ', c.Semester, c.Year) AS SEMESTER, \n"
+                + "    co.CourseCode AS SUBJECT_CODE,\n"
+                + "    co.CourseName AS SUBJECT_NAME,\n"
+                + "    ROUND(AVG(g.Score * a.Weight) / AVG(a.Weight), 2) AS GRADE, \n"
+                + "    CASE \n"
+                + "        WHEN ROUND(AVG(g.Score * a.Weight) / AVG(a.Weight), 2) >= 5.0 THEN 'Passed' \n"
+                + "        ELSE 'Not Passed' \n"
+                + "    END AS STATUS \n"
+                + "FROM \n"
+                + "    Grades g \n"
+                + "JOIN \n"
+                + "    StudentClasses sc ON g.StudentClassId = sc.StudentClassId \n"
+                + "JOIN \n"
+                + "    Classes c ON sc.ClassId = c.ClassId \n"
+                + "JOIN \n"
+                + "    Courses co ON c.CourseId = co.CourseId \n"
+                + "JOIN \n"
+                + "    Assessments a ON g.AssessmentId = a.AssessmentId\n"
+                + "WHERE \n"
+                + "    sc.StudentId = ?\n"
+                + "GROUP BY \n"
+                + "    c.Semester, c.Year, co.CourseCode, co.CourseName\n"
+                + "ORDER BY \n"
+                + "    c.Year, c.Semester, co.CourseCode;";
 
         try (Connection conn = DBContext.getConnection1(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -128,76 +142,112 @@ public class GradeDAO {
 
         return studentGrades;
     }
-    
+
+    public List<ReportDTO> report() throws SQLException, ClassNotFoundException {
+        List<ReportDTO> reportDTOs = new ArrayList<>();
+        String sql = "SELECT CONCAT_WS(' ', c.Semester, c.Year) AS SEMESTER, co.CourseCode AS SUBJECT_CODE, co.CourseName AS SUBJECT_NAME,\n"
+                + "COUNT(sc.StudentId) AS TOTAL_STUDENTS, \n"
+                + "SUM(CASE WHEN g.Score >= 5.0 THEN 1 ELSE 0 END) AS PASSED_STUDENTS,\n"
+                + "SUM(CASE WHEN g.Score < 5.0 THEN 1 ELSE 0 END) AS FAILED_STUDENTS \n"
+                + "FROM Grades g \n"
+                + "JOIN StudentClasses sc ON g.StudentClassId = sc.StudentClassId\n"
+                + "JOIN Classes c ON sc.ClassId = c.ClassId \n"
+                + "JOIN Courses co ON c.CourseId = co.CourseId \n"
+                + "GROUP BY c.Semester, c.Year, co.CourseCode, co.CourseName \n"
+                + "ORDER BY c.Year, c.Semester, co.CourseCode";
+
+        try (Connection conn = DBContext.getConnection1(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    String semester = rs.getString("SEMESTER");
+                    String subjectCode = rs.getString("SUBJECT_CODE");
+                    String subjectName = rs.getString("SUBJECT_NAME");
+                    int totalStudents = rs.getInt("TOTAL_STUDENTS");
+                    int totalPassed = rs.getInt("PASSED_STUDENTS");
+                    int totalFailed = rs.getInt("FAILED_STUDENTS");
+
+                    ReportDTO info = new ReportDTO(semester, subjectCode, subjectName, totalStudents, totalPassed, totalFailed);
+                    reportDTOs.add(info);
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            throw e;
+        }
+
+        return reportDTOs;
+    }
+
     public class StudentCourseInfo {
-    private int no;
-    private String semester;
-    private String subjectCode;
-    private String subjectName;
-    private double grade;
-    private String status;
 
-    public StudentCourseInfo() {
-    }
+        private int no;
+        private String semester;
+        private String subjectCode;
+        private String subjectName;
+        private double grade;
+        private String status;
 
-    public StudentCourseInfo(int no, String semester, String subjectCode, String subjectName, double grade, String status) {
-        this.no = no;
-        this.semester = semester;
-        this.subjectCode = subjectCode;
-        this.subjectName = subjectName;
-        this.grade = grade;
-        this.status = status;
-    }
+        public StudentCourseInfo() {
+        }
 
-    public int getNo() {
-        return no;
-    }
+        public StudentCourseInfo(int no, String semester, String subjectCode, String subjectName, double grade, String status) {
+            this.no = no;
+            this.semester = semester;
+            this.subjectCode = subjectCode;
+            this.subjectName = subjectName;
+            this.grade = grade;
+            this.status = status;
+        }
 
-    public void setNo(int no) {
-        this.no = no;
-    }
+        public int getNo() {
+            return no;
+        }
 
-    public String getSemester() {
-        return semester;
-    }
+        public void setNo(int no) {
+            this.no = no;
+        }
 
-    public void setSemester(String semester) {
-        this.semester = semester;
-    }
+        public String getSemester() {
+            return semester;
+        }
 
-    public String getSubjectCode() {
-        return subjectCode;
-    }
+        public void setSemester(String semester) {
+            this.semester = semester;
+        }
 
-    public void setSubjectCode(String subjectCode) {
-        this.subjectCode = subjectCode;
-    }
+        public String getSubjectCode() {
+            return subjectCode;
+        }
 
-    public String getSubjectName() {
-        return subjectName;
-    }
+        public void setSubjectCode(String subjectCode) {
+            this.subjectCode = subjectCode;
+        }
 
-    public void setSubjectName(String subjectName) {
-        this.subjectName = subjectName;
-    }
+        public String getSubjectName() {
+            return subjectName;
+        }
 
-    public double getGrade() {
-        return grade;
-    }
+        public void setSubjectName(String subjectName) {
+            this.subjectName = subjectName;
+        }
 
-    public void setGrade(double grade) {
-        this.grade = grade;
-    }
+        public double getGrade() {
+            return grade;
+        }
 
-    public String getStatus() {
-        return status;
-    }
+        public void setGrade(double grade) {
+            this.grade = grade;
+        }
 
-    public void setStatus(String status) {
-        this.status = status;
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
     }
-    
-    
-}
 
 }

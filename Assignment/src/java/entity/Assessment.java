@@ -5,6 +5,7 @@
 package entity;
 
 public class Assessment {
+
     private int assessmentId;
     private int courseId;
     private String category;
@@ -13,7 +14,7 @@ public class Assessment {
     private String duration;
     private String questionType;
     private String noQuestion;
-
+    private String weight;
 
     public Assessment() {
     }
@@ -29,7 +30,26 @@ public class Assessment {
         this.noQuestion = noQuestion;
     }
 
-    
+    public Assessment(int assessmentId, int courseId, String category, String type, String completionCriteria, String duration, String questionType, String noQuestion, String weight) {
+        this.assessmentId = assessmentId;
+        this.courseId = courseId;
+        this.category = category;
+        this.type = type;
+        this.completionCriteria = completionCriteria;
+        this.duration = duration;
+        this.questionType = questionType;
+        this.noQuestion = noQuestion;
+        this.weight = weight;
+    }
+
+    public String getWeight() {
+        return weight;
+    }
+
+    public void setWeight(String weight) {
+        this.weight = weight;
+    }
+
     public int getAssessmentId() {
         return assessmentId;
     }
@@ -61,6 +81,7 @@ public class Assessment {
     public void setType(String type) {
         this.type = type;
     }
+
     public String getCompletionCriteria() {
         return completionCriteria;
     }
@@ -85,7 +106,6 @@ public class Assessment {
         this.noQuestion = noQuestion;
     }
 
-
     public String getQuestionType() {
         return questionType;
     }
@@ -98,6 +118,5 @@ public class Assessment {
     public String toString() {
         return "Assessment{" + "assessmentId=" + assessmentId + ", courseId=" + courseId + ", category=" + category + ", type=" + type + ", completionCriteria=" + completionCriteria + ", duration=" + duration + ", questionType=" + questionType + ", noQuestion=" + noQuestion + '}';
     }
-    
-    
+
 }

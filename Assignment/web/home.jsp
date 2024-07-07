@@ -22,6 +22,9 @@
                     <c:if test="${sessionScope['account'].roleId == 2}">
                         <a href="addgrade">Add Grade</a>
                     </c:if>
+                        <c:if test="${sessionScope['account'].roleId == 1}">
+                        <a href="Report">Report</a>
+                    </c:if>
                     <a href="#">Welcome, ${sessionScope['account'].fullName}</a>
                     <a href="logout">Logout</a>
                 </c:if>
