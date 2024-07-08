@@ -5,8 +5,8 @@
 package controller;
 
 import dao.GradeDAO;
-import dao.GradeDAO.StudentCourseInfo;
 import dao.UserDAO;
+import dto.StudentCourseInfo;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
